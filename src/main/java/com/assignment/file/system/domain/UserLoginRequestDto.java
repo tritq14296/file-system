@@ -1,7 +1,11 @@
 package com.assignment.file.system.domain;
 
+import javax.validation.constraints.NotBlank;
+
 public class UserLoginRequestDto {
+    @NotBlank
     private String userName;
+    @NotBlank
     private String password;
 
     public String getUserName() {
