@@ -12,21 +12,21 @@ CREATE SCHEMA AUTHORIZATION TRITQ1
          )
     CREATE TABLE user_file (
             user_file_id number(10) not null,
-            user_id number(10),
+            user_id number(10) not null,
             file_name varchar2(4000),
             CONSTRAINT user_file_pk PRIMARY KEY (user_file_id),
             CONSTRAINT user_file_fk FOREIGN KEY (user_id) REFERENCES users(user_id)
         )
     CREATE TABLE user_role (
         user_role_id number(10) not null,
-        user_id number(10),
-        user_role_name varchar2(50),
+        user_id number(10) not null,
+        user_role_name varchar2(50) not null,
         CONSTRAINT user_role_pk PRIMARY KEY (user_role_id),
         CONSTRAINT user_role_fk FOREIGN KEY (user_id) REFERENCES users(user_id)
     )
     CREATE TABLE user_log (
         user_log_id number(10) not null,
-        user_id number(10),
+        user_id number(10) not null,
         user_log_in_time timestamp,
         user_log_out_time timestamp,
         CONSTRAINT user_log_pk PRIMARY KEY (user_log_id),
@@ -69,14 +69,11 @@ NOCYCLE
 CACHE 20
 NOORDER;
 
---insert new user with testSys1/Admin@12
-insert into users(user_id, user_name, password) VALUES(1, 'testSys1', '$2a$10$Vt.WUTe6vpqdh3Z4WiHhwOqwZIW25hYwG/mx.cTW5zEKcZIiD.jPO');
 --tritq1/password
-insert into users(user_id, user_name, password) VALUES(2, 'tritq1', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6');
+insert into users(user_id, user_name, password) VALUES(1, 'tritq1', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6');
 --tritq2/password
-insert into users(user_id, user_name, password) VALUES(3, 'tritq2', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6');
+insert into users(user_id, user_name, password) VALUES(2, 'tritq2', '$2a$10$slYQmyNdGzTn7ZLBXBChFOC9f6kFjAqPhccnP6DxlWXx2lPk1C3G6');
 --insert user role
-insert into user_role(user_role_id, user_id, user_role_name) VALUES(1, 3, 'ADMIN');
+insert into user_role(user_role_id, user_id, user_role_name) VALUES(1, 1, 'ADMIN');
 insert into user_role(user_role_id, user_id, user_role_name) VALUES(2, 2, 'MEMBER');
-insert into user_role(user_role_id, user_id, user_role_name) VALUES(3, 1, 'MEMBER');
 commit;
