@@ -1,6 +1,5 @@
 package com.assignment.file.system.controller;
 
-import com.assignment.file.system.config.UserContext;
 import com.assignment.file.system.domain.FileCommonResponseDto;
 import com.assignment.file.system.service.impl.FileServiceImpl;
 import org.apache.commons.lang3.StringUtils;
@@ -28,21 +27,15 @@ public class UserFileController {
         return fileService.storeFile(file);
     }
 
-    @GetMapping(value = "/{user-id}/download")
-    public ResponseEntity<Resource> downloadFile(@PathVariable("user-id") int userId,
-                                                 @RequestParam("file-name") String fileName,
-                                                 HttpServletRequest request) {
+    @GetMapping(value = "/{user-id}/download/latest")
+    public ResponseEntity<Resource> downloadLatestImage(@PathVariable("user-id") int userId,
+                                                        @RequestParam("user-name") String userName,
+                                                        HttpServletRequest request) {
         FileCommonResponseDto fileCommonResponseDto = new FileCommonResponseDto();
 
-        if (userId != UserContext.getUserDid()) {
-            fileCommonResponseDto.setMessage("You do not have permission to download file " + fileName);
-            fileCommonResponseDto.setStatus(false);
-            return new ResponseEntity(fileCommonResponseDto, HttpStatus.FORBIDDEN);
-        }
-
-        if (StringUtils.isNotBlank(fileName)) {
+        if (StringUtils.isNotBlank(userName)) {
             try {
-                Resource resource = fileService.downloadFile(userId, fileName);
+                Resource resource = fileService.downloadFile(userId,userName);
                 String contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
 
                 if (contentType == null) {
@@ -53,7 +46,7 @@ public class UserFileController {
                         .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                         .body(resource);
             } catch (Exception e) {
-                fileCommonResponseDto.setMessage(FILE_NOT_FOUND + fileName);
+                fileCommonResponseDto.setMessage(FILE_NOT_FOUND);
                 fileCommonResponseDto.setStatus(false);
                 return new ResponseEntity(fileCommonResponseDto, HttpStatus.BAD_REQUEST);
             }

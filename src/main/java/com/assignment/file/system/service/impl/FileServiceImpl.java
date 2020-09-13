@@ -82,18 +82,17 @@ public class FileServiceImpl implements FileService {
     /**
      * Function get file from service with file name and user id, if file not exist, throw exception.
      * @param userId
-     * @param fileName
      * @return resource
      * @throws Exception
      */
     @Override
-    public Resource downloadFile(int userId, String fileName) throws Exception {
-        String storeDirectory = System.getProperty(USER_HOME) + uploadDir + File.separator + UserContext.getUserName();
+    public Resource downloadFile(int userId, String userName) throws Exception {
+        String storeDirectory = System.getProperty(USER_HOME) + uploadDir + File.separator + userName;
 
-        UserFileModel userFileModel = userFileRepository.getUserFileModelByFileNameAndUserId(fileName, userId);
+        UserFileModel userFileModel = userFileRepository.getUserFileModelByUserId(userId);
 
         if (userFileModel == null) {
-            throw new FileNotFoundException(FILE_NOT_FOUND + fileName);
+            throw new FileNotFoundException(FILE_NOT_FOUND);
         }
 
         String fileUri = storeDirectory + File.separator + userFileModel.getFileName();

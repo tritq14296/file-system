@@ -50,7 +50,7 @@ public class UserFileControllerTest {
         UserContext.setUserDid(1);
         UserContext.setUserName("tritq1");
 
-        downloadFileUrl = "/api/v1/files/1/download?file-name=test.txt";
+        downloadFileUrl = "/api/v1/files/1/download/latest?user-name=tritq1";
         uploadFileUrl = "/api/v1/files";
         uploadDir = "/upload";
         fileName = "test.txt";
@@ -105,21 +105,14 @@ public class UserFileControllerTest {
 
         Resource resource = new UrlResource(Paths.get(fileUri).toUri());
 
-        when(fileService.downloadFile(1, fileName)).thenReturn(resource);
+        when(fileService.downloadFile(1, "tritq1")).thenReturn(resource);
 
         mockMvc.perform(get(downloadFileUrl).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isOk());
     }
 
     @Test
-    public void testDownloadFileWithForbidden() throws Exception {
-        String forbiddenUrl = "/api/v1/files/2/download?file-name=test.txt";
-
-        mockMvc.perform(get(forbiddenUrl).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isForbidden());
-    }
-
-    @Test
-    public void testDowloadFileWithFileNameMissing() throws Exception {
-        String missingFileNameUrl = "/api/v1/files/1/download?file-name=";
+    public void testDowloadFileWithUserNameMissing() throws Exception {
+        String missingFileNameUrl = "/api/v1/files/1/download/latest?user-name=";
 
         mockMvc.perform(get(missingFileNameUrl).contentType(MediaType.APPLICATION_JSON)).andExpect(status().isBadRequest());
     }

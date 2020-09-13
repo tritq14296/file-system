@@ -20,12 +20,10 @@ import org.springframework.test.util.ReflectionTestUtils;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.io.InputStream;
 import java.nio.file.Files;
 
 import static org.mockito.ArgumentMatchers.anyInt;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
 @SpringBootTest
@@ -39,12 +37,13 @@ public class FileServiceImplTest {
     private String uploadDir = "/upload";
     private String storeDirectory;
     private String fileName = "test.txt";
+    private String userName = "tritq1";
 
     @Before
     public void init() {
         MockitoAnnotations.initMocks(this);
         ReflectionTestUtils.setField(fileService, "uploadDir", uploadDir);
-        UserContext.setUserName("tritq1");
+        UserContext.setUserName(userName);
         UserContext.setUserDid(1);
         storeDirectory = System.getProperty("user.home") + uploadDir + File.separator + UserContext.getUserName();
 
@@ -118,9 +117,9 @@ public class FileServiceImplTest {
         UserFileModel userFileModel = new UserFileModel();
         userFileModel.setFileName(fileName);
 
-        when(userFileRepository.getUserFileModelByFileNameAndUserId(anyString(), anyInt())).thenReturn(userFileModel);
+        when(userFileRepository.getUserFileModelByUserId(anyInt())).thenReturn(userFileModel);
 
-        Resource responseResource = fileService.downloadFile(1, fileName);
+        Resource responseResource = fileService.downloadFile(1, userName);
 
         Assert.assertNotNull(responseResource);
     }
@@ -128,9 +127,9 @@ public class FileServiceImplTest {
     @Test(expected = FileNotFoundException.class)
     public void testDownloadFileWithFileNameNotExistInDatabase() throws Exception {
 
-        when(userFileRepository.getUserFileModelByFileNameAndUserId(anyString(), anyInt())).thenReturn(null);
+        when(userFileRepository.getUserFileModelByUserId(anyInt())).thenReturn(null);
 
-        fileService.downloadFile(1, fileName);
+        fileService.downloadFile(1, userName);
     }
 
     @Test(expected = FileNotFoundException.class)
@@ -138,9 +137,9 @@ public class FileServiceImplTest {
         UserFileModel userFileModel = new UserFileModel();
         userFileModel.setFileName("test1.txt");
 
-        when(userFileRepository.getUserFileModelByFileNameAndUserId(anyString(), anyInt())).thenReturn(userFileModel);
+        when(userFileRepository.getUserFileModelByUserId(anyInt())).thenReturn(userFileModel);
 
-        fileService.downloadFile(1, "test1.txt");
+        fileService.downloadFile(1, userName);
 
     }
 }

@@ -6,5 +6,5 @@ import org.springframework.web.multipart.MultipartFile;
 
 public interface FileService {
     ResponseEntity storeFile(MultipartFile file);
-    Resource downloadFile(int userId, String fileName) throws Exception;
+    Resource downloadFile(int userId, String userName) throws Exception;
 }
